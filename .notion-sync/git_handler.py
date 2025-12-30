@@ -39,15 +39,41 @@ class FileChange:
     
     @property
     def topic(self) -> Optional[str]:
-        """Extract topic name from file path."""
+        """
+        Extract topic name from file path.
+        
+        Topic is the first directory component, NOT the filename.
+        Root-level files (e.g., README.md) return None.
+        
+        Examples:
+            linux/README.md -> "linux"
+            aws/images/arch.png -> "aws"
+            README.md -> None (root-level file)
+            .notion-sync/state.json -> None (hidden directory)
+        """
         parts = self.path.parts
         
-        # Skip hidden directories and root files
-        if not parts or parts[0].startswith("."):
+        # No parts = empty path (shouldn't happen)
+        if not parts:
+            return None
+        
+        # Skip hidden directories (e.g., .notion-sync/)
+        if parts[0].startswith("."):
+            return None
+        
+        # Root-level files have only 1 part (the filename itself).
+        # Topics are directories, not files, so we need at least 2 parts:
+        # [directory, filename] or [dir1, dir2, ..., filename]
+        if len(parts) < 2:
             return None
         
         # First directory is the topic
         return parts[0]
+    
+    @property
+    def is_root_file(self) -> bool:
+        """Check if this file is at the repository root level."""
+        return len(self.path.parts) == 1 and not self.path.parts[0].startswith(".")
 
 
 @dataclass
@@ -58,8 +84,17 @@ class SyncChanges:
     
     @property
     def topics_changed(self) -> set[str]:
-        """Get unique topics that have changes."""
+        """
+        Get unique topics (directories) that have changes.
+        
+        Root-level files are excluded - they don't belong to any topic.
+        """
         return {f.topic for f in self.files if f.topic}
+    
+    @property
+    def has_root_changes(self) -> bool:
+        """Check if any root-level files (e.g., README.md) changed."""
+        return any(f.is_root_file for f in self.files)
     
     @property
     def has_changes(self) -> bool:
@@ -155,6 +190,9 @@ class GitHandler:
         """
         Detect all changes in the working directory.
         
+        Parses git status --porcelain=v1 output.
+        Format: XY<space>PATH where XY is 2-char status code.
+        
         Returns:
             SyncChanges object with all detected changes.
         """
@@ -170,29 +208,56 @@ class GitHandler:
             if not line:
                 continue
             
-            # Parse porcelain format: XY path
+            # Validate minimum line length: XY<space>P (at least 4 chars)
+            if len(line) < 4:
+                continue
+            
+            # Parse porcelain v1 format: XY<space>PATH
+            # Position 0: index status (X)
+            # Position 1: worktree status (Y)
+            # Position 2: space separator
+            # Position 3+: file path
             status = line[:2]
-            path_str = line[3:]
+            
+            # Validate separator is a space (defensive check)
+            if line[2] != " ":
+                # Fallback: try to find path after first space
+                space_idx = line.find(" ")
+                if space_idx >= 2:
+                    path_str = line[space_idx + 1:]
+                else:
+                    continue
+            else:
+                path_str = line[3:]
+            
+            # Sanity check: path should not be empty
+            if not path_str or not path_str.strip():
+                continue
             
             # Handle renames (format: "R  old -> new")
             if " -> " in path_str:
-                old_path, new_path = path_str.split(" -> ")
+                old_path, new_path = path_str.split(" -> ", 1)
                 changes.files.append(FileChange(
-                    path=Path(new_path),
+                    path=Path(new_path.strip()),
                     change_type=ChangeType.RENAMED,
-                    old_path=Path(old_path),
+                    old_path=Path(old_path.strip()),
                 ))
                 continue
             
-            path = Path(path_str)
+            path = Path(path_str.strip())
             
-            # Determine change type
-            if status[0] == "?" or status[1] == "?":
-                change_type = ChangeType.ADDED
-            elif status[0] == "D" or status[1] == "D":
+            # Determine change type based on status codes
+            # X = index status, Y = worktree status
+            idx_status, wt_status = status[0], status[1]
+            
+            if idx_status == "?" or wt_status == "?":
+                change_type = ChangeType.ADDED  # Untracked
+            elif idx_status == "D" or wt_status == "D":
                 change_type = ChangeType.DELETED
-            elif status[0] == "A":
-                change_type = ChangeType.ADDED
+            elif idx_status == "A":
+                change_type = ChangeType.ADDED  # Staged as new
+            elif idx_status == "R" or wt_status == "R":
+                change_type = ChangeType.RENAMED
             else:
                 change_type = ChangeType.MODIFIED
             
@@ -218,22 +283,28 @@ class GitHandler:
         """
         Generate a semantic commit message based on changes.
         
-        Format: docs(<scope>): <action> <details>
+        Uses Conventional Commits format: docs(<scope>): <description>
+        
+        Scope rules:
+        - Single topic changed: scope = topic name (directory)
+        - Multiple topics: no scope, list in body
+        - Root files only: no scope, descriptive message
         
         Args:
             changes: SyncChanges object with detected changes.
-            synced_pages: List of page names that were synced.
+            synced_pages: List of page/directory names that were synced.
             is_initial: Whether this is the initial commit.
             
         Returns:
-            Formatted commit message.
+            Formatted commit message (max 72 chars for subject line).
         """
         topics = changes.topics_changed
         
         # Initial commit
         if is_initial:
             if len(synced_pages) == 1:
-                return f"docs({synced_pages[0]}): initial sync"
+                scope = self._sanitize_scope(synced_pages[0])
+                return f"docs({scope}): initial sync"
             else:
                 pages_list = ", ".join(sorted(synced_pages))
                 return (
@@ -244,8 +315,9 @@ class GitHandler:
         # Single topic changed
         if len(topics) == 1:
             topic = list(topics)[0]
+            scope = self._sanitize_scope(topic)
             action = self._determine_action(changes, topic)
-            return f"docs({topic}): {action}"
+            return f"docs({scope}): {action}"
         
         # Multiple topics changed
         if len(topics) > 1:
@@ -255,8 +327,40 @@ class GitHandler:
                 f"Updated: {topics_list}"
             )
         
-        # Fallback (e.g., only root README changed)
-        return "docs: update documentation index"
+        # No topics changed = only root-level files (e.g., README.md, LICENSE)
+        # This is the fallback case that previously caused the typo bug
+        if changes.has_root_changes:
+            return "docs: update documentation index"
+        
+        # Truly empty changes (shouldn't reach here normally)
+        return "docs: sync latest changes"
+    
+    def _sanitize_scope(self, scope: str) -> str:
+        """
+        Sanitize scope for use in commit message.
+        
+        Ensures scope is valid for Conventional Commits:
+        - No special characters that break parsing
+        - Reasonable length
+        - Never empty
+        
+        Args:
+            scope: Raw scope string (typically a directory name).
+            
+        Returns:
+            Sanitized scope string.
+        """
+        if not scope:
+            return "docs"
+        
+        # Remove any problematic characters for commit message parsing
+        sanitized = scope.strip()
+        
+        # Truncate if too long (keep commits readable)
+        if len(sanitized) > 30:
+            sanitized = sanitized[:27] + "..."
+        
+        return sanitized or "docs"
     
     def _determine_action(self, changes: SyncChanges, topic: str) -> str:
         """Determine the action description for a topic."""
