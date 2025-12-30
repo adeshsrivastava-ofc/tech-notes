@@ -55,4 +55,3 @@ temp/
 # Sync state (optional - you may want to commit this)
 # Uncommenting this will make every sync a full sync
 # .notion-sync/state.json
-.github/workflows/sync.yml

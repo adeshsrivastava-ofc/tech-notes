@@ -21,4 +21,4 @@ A collection of technical notes and documentation.
 
 These notes are automatically synced from [Notion](https://notion.so) using a custom sync system.
 
-*Last sync: 2025-12-29 17:53 UTC*
+*Last sync: 2025-12-30 12:19 UTC*
