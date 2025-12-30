@@ -128,12 +128,9 @@ class Config:
                 "Set this to your email for git commits."
             )
         
+        # GITHUB_TOKEN is optional - only needed for push operations
+        # In CI, GitHub Actions provides this automatically
         github_token = os.getenv("GITHUB_TOKEN")
-        if not github_token:
-            raise ValueError(
-                "GITHUB_TOKEN environment variable is required.\n"
-                "Create a token at https://github.com/settings/tokens"
-            )
         
         # Paths
         repo_root_str = os.getenv("REPO_ROOT")

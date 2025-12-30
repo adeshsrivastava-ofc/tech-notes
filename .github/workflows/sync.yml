@@ -9,7 +9,11 @@
 #
 # Required Secrets:
 # - NOTION_TOKEN: Your Notion integration token
+#
+# Required Variables:
 # - NOTION_PARENT_PAGE_ID: The ID of your Tech Notes parent page
+# - GIT_USER_NAME: Git commit author name
+# - GIT_USER_EMAIL: Git commit author email
 
 name: Sync Notion to GitHub
 
@@ -70,16 +74,19 @@ jobs:
           pip install -r requirements.txt
       
       - name: Configure Git
+        env:
+          GIT_USER_NAME: ${{ vars.GIT_USER_NAME }}
+          GIT_USER_EMAIL: ${{ vars.GIT_USER_EMAIL }}
         run: |
-          git config user.name "Notion Sync Bot"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "$GIT_USER_NAME"
+          git config user.email "$GIT_USER_EMAIL"
       
       - name: Run Notion Sync
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
-          NOTION_PARENT_PAGE_ID: ${{ secrets.NOTION_PARENT_PAGE_ID }}
-          GIT_USER_NAME: "Notion Sync Bot"
-          GIT_USER_EMAIL: "github-actions[bot]@users.noreply.github.com"
+          NOTION_PARENT_PAGE_ID: ${{ vars.NOTION_PARENT_PAGE_ID }}
+          GIT_USER_NAME: ${{ vars.GIT_USER_NAME }}
+          GIT_USER_EMAIL: ${{ vars.GIT_USER_EMAIL }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           FORCE_SYNC: ${{ github.event.inputs.force_sync || 'false' }}
           DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
