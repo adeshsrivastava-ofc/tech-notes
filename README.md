@@ -9,6 +9,7 @@ A collection of technical notes and documentation.
 - [☁️ AWS - Amazon Web Service](./aws-amazon-web-service/)
 - [🐳 Docker](./docker/)
 - [🐙 Git & GitHub](./git-github/)
+- [🍺 HomeBrew](./homebrew/)
 - [🤖 Jenkins](./jenkins/)
 - [☸️ K8S - Kubernetes](./k8s-kubernetes/)
 - [🐧 Linux](./linux/)
@@ -21,4 +22,4 @@ A collection of technical notes and documentation.
 
 These notes are automatically synced from [Notion](https://notion.so) using a custom sync system.
 
-*Last sync: 2025-12-30 16:40 UTC*
+*Last sync: 2025-12-31 04:58 UTC*
