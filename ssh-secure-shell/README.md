@@ -1,6 +1,6 @@
 # SSH - Secure Shell
 
-> 📅 Last updated: 2025-11-06 14:04 UTC
+> 📅 Last updated: 2026-01-02 09:07 UTC
 > 🔗 [View in Notion](https://www.notion.so/SSH-Secure-Shell-2956249cbbe28077a888e2601392a95c)
 
 ---
@@ -232,7 +232,7 @@ Ans) Four main goals:
 <details>
 <summary>(Optional Step): How to manage OpenSSH Server:</summary>
 
-- sdc
+- Open Terminal.
 </details>
 </details>
 </details>
