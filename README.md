@@ -10,6 +10,7 @@ A collection of technical notes and documentation.
 - [🐳 Docker](./docker/)
 - [🐙 Git & GitHub](./git-github/)
 - [🍺 HomeBrew](./homebrew/)
+- [☕ Java](./java/)
 - [🤖 Jenkins](./jenkins/)
 - [☸️ K8S - Kubernetes](./k8s-kubernetes/)
 - [🐧 Linux](./linux/)
@@ -22,4 +23,4 @@ A collection of technical notes and documentation.
 
 These notes are automatically synced from [Notion](https://notion.so) using a custom sync system.
 
-*Last sync: 2026-01-02 12:36 UTC*
+*Last sync: 2026-01-03 15:58 UTC*
