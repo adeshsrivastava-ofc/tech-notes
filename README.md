@@ -17,6 +17,7 @@ A collection of technical notes and documentation.
 - [🤖 Jenkins](./jenkins/)
 - [☸️ K8S - Kubernetes](./k8s-kubernetes/)
 - [🐧 Linux](./linux/)
+- [https://www.notion.so/icons/code_green.svg S.O.L.I.D. Principles](./solid-principles/)
 - [🌱 Spring Boot](./spring-boot/)
 - [📄 SSH - Secure Shell](./ssh-secure-shell/)
 
@@ -26,4 +27,4 @@ A collection of technical notes and documentation.
 
 These notes are automatically synced from [Notion](https://notion.so) using a custom sync system.
 
-*Last sync: 2026-01-11 17:02 UTC*
+*Last sync: 2026-01-27 18:34 UTC*
