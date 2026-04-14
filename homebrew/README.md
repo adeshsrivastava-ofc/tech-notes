@@ -1,7 +1,7 @@
 # 🍺 HomeBrew
 
 > 📅 Last updated: 2026-01-02 09:05 UTC
-> 🔗 [View in Notion](https://www.notion.so/HomeBrew-2da6249cbbe280438c4fdf3186e97bcc)
+> 🔗 [View in Notion](https://app.notion.com/p/HomeBrew-2da6249cbbe280438c4fdf3186e97bcc)
 
 ---
 
