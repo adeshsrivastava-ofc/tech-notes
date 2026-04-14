@@ -1,7 +1,7 @@
 # 📦 SQL
 
 > 📅 Last updated: 2026-03-10 13:51 UTC
-> 🔗 [View in Notion](https://www.notion.so/SQL-2ff6249cbbe2809aa899f705a9dac05a)
+> 🔗 [View in Notion](https://app.notion.com/p/SQL-2ff6249cbbe2809aa899f705a9dac05a)
 
 ---
 

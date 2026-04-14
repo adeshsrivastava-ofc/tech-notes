@@ -1,7 +1,7 @@
 # 🌐 How the Web Works?
 
 > 📅 Last updated: 2026-01-11 17:01 UTC
-> 🔗 [View in Notion](https://www.notion.so/How-the-Web-Works-2e56249cbbe2801db43bc62655307bd9)
+> 🔗 [View in Notion](https://app.notion.com/p/How-the-Web-Works-2e56249cbbe2801db43bc62655307bd9)
 
 ---
 
