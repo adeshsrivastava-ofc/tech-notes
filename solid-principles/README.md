@@ -1,7 +1,7 @@
 # 📜 S.O.L.I.D. Principles
 
 > 📅 Last updated: 2026-02-07 11:47 UTC
-> 🔗 [View in Notion](https://app.notion.com/p/S-O-L-I-D-Principles-2fe6249cbbe280d39866cf3c995bdf32)
+> 🔗 [View in Notion](https://www.notion.so/S-O-L-I-D-Principles-2fe6249cbbe280d39866cf3c995bdf32)
 
 ---
 

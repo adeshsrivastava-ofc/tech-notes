@@ -28,4 +28,4 @@ A collection of technical notes and documentation.
 
 These notes are automatically synced from [Notion](https://notion.so) using a custom sync system.
 
-*Last sync: 2026-04-14 07:27 UTC*
+*Last sync: 2026-04-14 13:19 UTC*

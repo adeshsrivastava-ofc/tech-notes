@@ -1,7 +1,7 @@
 # ☕ Java
 
 > 📅 Last updated: 2026-01-11 16:46 UTC
-> 🔗 [View in Notion](https://www.notion.so/Java-2dd6249cbbe280da81def4cb603f32ed)
+> 🔗 [View in Notion](https://app.notion.com/p/Java-2dd6249cbbe280da81def4cb603f32ed)
 
 ---
 
