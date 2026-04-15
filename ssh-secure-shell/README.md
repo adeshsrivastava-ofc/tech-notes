@@ -1,7 +1,7 @@
 # SSH - Secure Shell
 
 > 📅 Last updated: 2026-01-02 09:07 UTC
-> 🔗 [View in Notion](https://app.notion.com/p/SSH-Secure-Shell-2956249cbbe28077a888e2601392a95c)
+> 🔗 [View in Notion](https://www.notion.so/SSH-Secure-Shell-2956249cbbe28077a888e2601392a95c)
 
 ---
 
